@@ -39,7 +39,7 @@ export default function CustomStack({ items }) {
         {items &&
           items.map((item, index) => (
             <Item key={index} onClick={() => handleRowClick(item.data)}>
-              {item.device_name}
+              {item.device_id} {item.device_name}
             </Item>
           ))}
       </Stack>
@@ -67,41 +67,6 @@ function CustomModalDisplay({ openner, comptitle, handleCloseBTN, data }) {
           <Button variant="text" onClick={handleCloseBTN}>
             Cancel
           </Button>
-          {/* <Button
-          variant="contained"
-          color="success"
-          onClick={(e) => {
-            e.preventDefault();
-            if (comptitle && comptitle === "PREPARED BY") {
-              handleModalRowClick(
-                {
-                  prepared_by: `${tempData.fname} ${tempData.mname} ${tempData.lname} ${tempData.extname}`,
-                  prepared_by_position: tempData.position_name,
-                },
-                comptitle
-              );
-            } else if (comptitle && comptitle === "ENDORSED BY") {
-              handleModalRowClick(
-                {
-                  endorsed_by: `${tempData.fname} ${tempData.mname} ${tempData.lname} ${tempData.extname}`,
-                  endorsed_by_position: tempData.position_name,
-                  endorsed_by_department: tempData.dept_title,
-                },
-                comptitle
-              );
-            } else if (comptitle && comptitle === "Report To") {
-              handleModalRowClick(
-                {
-                  assigned_by: `${tempData.fname} ${tempData.mname} ${tempData.lname} ${tempData.extname}`,
-                  position: tempData.position_name,
-                },
-                comptitle
-              );
-            }
-          }}
-        >
-          Save
-        </Button> */}
         </Box>
       </Box>
     </CustomCenterModal>

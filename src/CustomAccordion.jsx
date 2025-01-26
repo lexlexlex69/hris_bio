@@ -5,37 +5,28 @@ import AccordionSummary from "@mui/material/AccordionSummary"
 import AccordionDetails from "@mui/material/AccordionDetails"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import Button from "@mui/material/Button"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import { Box } from "@mui/material"
 
 export default function CustomAccordion({ data }) {
+  console.log(data)
   return (
     <div>
-      {data &&
-        data.map((item, index) => (
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls={item.datestart}
-              id={item.datestart}
-            >
-              {item.datestart}
-            </AccordionSummary>
-            <AccordionDetails>
-              {item.logs &&
-                item.logs.map((item, index) => (
-                  <Accordion>
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls={item.id}
-                      id={item.id}
-                    >
-                      {item.id}
-                    </AccordionSummary>
-                    <AccordionDetails>sdfsdfsdfsfsdf</AccordionDetails>
-                  </Accordion>
-                ))}
-            </AccordionDetails>
-          </Accordion>
-        ))}
+      {data?.logs?.map((item, index) => (
+        <Accordion
+          key={index}
+          //  defaultExpanded
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={item.datestart}
+            id={item.datestart}
+          >
+            {item.datetime_loaded}
+          </AccordionSummary>
+          <AccordionDetails>{item.description}</AccordionDetails>
+        </Accordion>
+      ))}
     </div>
   )
 }

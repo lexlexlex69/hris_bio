@@ -1,0 +1,143 @@
+import * as React from "react"
+import { DataGrid } from "@mui/x-data-grid"
+import { useBio } from "../context/BioManageProvider"
+import { Box, Button, Stack, useMediaQuery } from "@mui/material"
+import { CustomCenterModal } from "../CustomCenterModal"
+import CustomAccordion from "../CustomAccordion"
+
+// const rows = [
+//   { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
+//   { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
+//   { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
+//   { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
+//   { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
+//   { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
+//   { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
+//   { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
+//   { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
+// ]
+
+export default function CustomTableBio() {
+  const {
+    displayData,
+    handleTableRowClick,
+    modalData,
+    handleCloseModal,
+    open,
+  } = useBio()
+  const columns = [
+    {
+      field: "datestart",
+      headerName: "Date",
+      width: 100,
+      disableClickEventBubbling: true,
+    },
+    {
+      field: "Success",
+      headerName: "Success",
+      width: 130,
+      disableClickEventBubbling: true,
+    },
+    {
+      field: "Failed",
+      headerName: "Failed",
+      width: 130,
+      disableClickEventBubbling: true,
+    },
+    {
+      field: "Warning",
+      headerName: "Warning",
+      width: 130,
+      disableClickEventBubbling: true,
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 180,
+      sortable: false,
+      disableClickEventBubbling: true,
+
+      renderCell: (params) => {
+        const onClick = (e) => {
+          const currentRow = params.row
+          currentRow && handleTableRowClick(currentRow.datestart)
+          // return alert(JSON.stringify(currentRow, null, 4))
+        }
+
+        return (
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="outlined"
+              color="warning"
+              size="small"
+              onClick={onClick}
+            >
+              Edit
+            </Button>
+          </Stack>
+        )
+      },
+    },
+    // {
+    //   field: "fullName",
+    //   headerName: "Full name",
+    //   description: "This column has a value getter and is not sortable.",
+    //   sortable: false,
+    //   width: 160,
+    //   valueGetter: (value, row) => `${row.firstName || ""} ${row.lastName || ""}`,
+    // },
+  ]
+  const row = displayData && displayData.data
+  function getRowId(row) {
+    return row.datestart
+  }
+
+  return (
+    <div style={{ height: 400, width: "100%" }}>
+      <CustomModalDisplay
+        openner={open}
+        comptitle={"asdfasdf"}
+        handleCloseBTN={handleCloseModal}
+        data={modalData}
+      />
+      <DataGrid
+        rows={row}
+        getRowId={getRowId}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5, 10]}
+        // checkboxSelection
+      />
+    </div>
+  )
+}
+
+function CustomModalDisplay({ openner, comptitle, handleCloseBTN, data }) {
+  const matches = useMediaQuery("(min-width: 565px)")
+  console.log(data)
+  return (
+    <CustomCenterModal
+      key={"open1"}
+      compSize={"40%"}
+      matches={matches}
+      openner={openner}
+      comptitle={comptitle}
+      handleCloseBTN={handleCloseBTN}
+    >
+      <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        <Box>
+          <CustomAccordion data={data ? data : []} />
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Button variant="text" onClick={handleCloseBTN}>
+            Cancel
+          </Button>
+        </Box>
+      </Box>
+    </CustomCenterModal>
+  )
+}
