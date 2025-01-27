@@ -1,3 +1,5 @@
+import { fakeResponse2 } from "./fakeData";
+
 export const filterData = (arr, type) => {
   if (type === 0) {
     return arr;
@@ -42,10 +44,13 @@ export const groupByDevice = (data) => {
     const datestart = item.datestart;
     const dateend = item.dateend;
     const existingGroup = acc.find((group) => group.device_id === device_id);
+    const existingDate =
+      existingGroup &&
+      existingGroup.data.findIndex((group) => group.datestart === datestart);
+    const ifExistNoFetched =
+      existingGroup &&
+      existingGroup.noFetchDateCount.find((item) => item === datestart);
     if (existingGroup) {
-      const existingDate = existingGroup.data.findIndex(
-        (group) => group.datestart === datestart
-      );
       if (existingDate >= 0) {
         if (item.description.includes("Success")) {
           existingGroup.data[existingDate].Success += 1;
@@ -59,19 +64,36 @@ export const groupByDevice = (data) => {
         existingGroup.data[existingDate].totalFetched += fetchedExtractor(item);
         existingGroup.data[existingDate].logs.push(item);
 
-        if (false) {
-          const updatedData = existingGroup.noFetchDateCount.filter(
-            (item) => item === datestart
-          );
-          // console.log("updatedData", updatedData);
-          existingGroup.noFetchDateCount = updatedData;
-        } else {
-          if (
-            !fetchedExtractor(item) &&
-            !existingGroup.noFetchDateCount.find((item) => item === datestart)
-          )
-            existingGroup.noFetchDateCount.push(datestart);
+        // console.log(existingGroup);
+        if (existingGroup.data[existingDate].totalFetched != 0) {
+          if (existingGroup.data[existingDate].totalFetched > 0) {
+            const updatedData = existingGroup.noFetchDateCount.filter(
+              (item) => item === datestart
+            );
+            existingGroup.noFetchDateCount = updatedData;
+          }
         }
+        // if (
+        //   existingGroup.data[existingDate].totalFetched == 0 &&
+        //   !ifExistNoFetched
+        // ) {
+        //   existingGroup.noFetchDateCount.push(datestart);
+        // }
+        /////////////////
+        // if (existingGroup.data[existingDate].totalFetched > 0) {
+        //   console.log("asdf");
+        //   const updatedData = existingGroup.noFetchDateCount.filter(
+        //     (item) => item === datestart
+        //   );
+        //   // console.log("updatedData", updatedData);
+        //   existingGroup.noFetchDateCount = updatedData;
+        // } else {
+        //   if (
+        //     fetchedExtractor(item) == 0 &&
+        //     !existingGroup.noFetchDateCount.find((item) => item === datestart)
+        //   )
+        //     existingGroup.noFetchDateCount.push(datestart);
+        // }
       } else {
         existingGroup.data.push({
           datestart,
@@ -104,3 +126,50 @@ export const groupByDevice = (data) => {
   }, []);
   return grouped;
 };
+
+const groupedData = fakeResponse2.reduce((acc, curr) => {
+  // Find or create an entry for the current device
+  let deviceEntry = acc.find((item) => item.device_id === curr.device_id);
+
+  if (!deviceEntry) {
+    deviceEntry = {
+      device_id: curr.device_id,
+      device_name: curr.device_name,
+      data: [],
+    };
+    acc.push(deviceEntry);
+  }
+
+  // Find or create an entry for the current date
+  let dateEntry = deviceEntry.data.find(
+    (item) => item.datestart === curr.datestart
+  );
+
+  if (!dateEntry) {
+    dateEntry = {
+      datestart: curr.datestart,
+      logs: [],
+      Success: 0,
+      Warning: 0,
+      Failed: 0,
+      totalFetched: 0,
+    };
+    deviceEntry.data.push(dateEntry);
+  }
+
+  // Add log and update counts
+  const fetchedCount = curr.description.match(
+    /(\d+) data fetched successfully/
+  )?.[1];
+  if (curr.status === "1") {
+    dateEntry.Success++;
+    dateEntry.totalFetched += fetchedCount ? parseInt(fetchedCount, 10) : 0;
+  } else if (curr.status === "0") {
+    dateEntry.Failed++;
+  }
+
+  dateEntry.logs.push(curr);
+
+  return acc;
+}, []);
+console.log("groupedData", groupedData);
