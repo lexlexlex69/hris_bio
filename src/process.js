@@ -17,117 +17,10 @@ export const filterData = (arr, type) => {
   }
 };
 
-const fetchedExtractor = (obj) => {
-  let initialValue = 0;
-  // console.log("obj", obj)
-  if (obj.description.includes("Success")) {
-    const match = obj.description.match(/There are (\d+) data fetched/);
-    // obj.id === "9172" && console.log("match", match)
-    initialValue = initialValue + (match ? parseInt(match[1]) : 0);
-  }
-  return initialValue;
-};
-
-// const noFetchCount = (currentCount, obj) => {
-//   const fetched = fetchedExtractor(obj)
-
-//     currentCount =  fetched? 0 : currentCount  += 1
-
-//   return currentCount
-// }
 
 export const groupByDevice = (data) => {
   //   console.log("stringify", JSON.stringify(data));
-  const grouped = data.reduce((acc, item) => {
-    const device_id = item.device_id.trim();
-    const device_name = item.device_name.trim();
-    const datestart = item.datestart;
-    const dateend = item.dateend;
-    const existingGroup = acc.find((group) => group.device_id === device_id);
-    const existingDate =
-      existingGroup &&
-      existingGroup.data.findIndex((group) => group.datestart === datestart);
-    const ifExistNoFetched =
-      existingGroup &&
-      existingGroup.noFetchDateCount.find((item) => item === datestart);
-    if (existingGroup) {
-      if (existingDate >= 0) {
-        if (item.description.includes("Success")) {
-          existingGroup.data[existingDate].Success += 1;
-        }
-        if (item.description.includes("Warning")) {
-          existingGroup.data[existingDate].Warning += 1;
-        }
-        if (item.description.includes("Failed")) {
-          existingGroup.data[existingDate].Failed += 1;
-        }
-        existingGroup.data[existingDate].totalFetched += fetchedExtractor(item);
-        existingGroup.data[existingDate].logs.push(item);
-
-        // console.log(existingGroup);
-        if (existingGroup.data[existingDate].totalFetched != 0) {
-          if (existingGroup.data[existingDate].totalFetched > 0) {
-            const updatedData = existingGroup.noFetchDateCount.filter(
-              (item) => item === datestart
-            );
-            existingGroup.noFetchDateCount = updatedData;
-          }
-        }
-        // if (
-        //   existingGroup.data[existingDate].totalFetched == 0 &&
-        //   !ifExistNoFetched
-        // ) {
-        //   existingGroup.noFetchDateCount.push(datestart);
-        // }
-        /////////////////
-        // if (existingGroup.data[existingDate].totalFetched > 0) {
-        //   console.log("asdf");
-        //   const updatedData = existingGroup.noFetchDateCount.filter(
-        //     (item) => item === datestart
-        //   );
-        //   // console.log("updatedData", updatedData);
-        //   existingGroup.noFetchDateCount = updatedData;
-        // } else {
-        //   if (
-        //     fetchedExtractor(item) == 0 &&
-        //     !existingGroup.noFetchDateCount.find((item) => item === datestart)
-        //   )
-        //     existingGroup.noFetchDateCount.push(datestart);
-        // }
-      } else {
-        existingGroup.data.push({
-          datestart,
-          logs: [item],
-          Success: item.description.includes("Success") ? 1 : 0,
-          Warning: item.description.includes("Warning") ? 1 : 0,
-          Failed: item.description.includes("Failed") ? 1 : 0,
-          totalFetched: fetchedExtractor(item),
-        });
-      }
-    } else {
-      acc.push({
-        device_id,
-        device_name,
-        noFetchDateCount: fetchedExtractor(item) ? [] : [datestart],
-        data: [
-          {
-            datestart,
-            logs: [item],
-            Success: item.description.includes("Success") ? 1 : 0,
-            Warning: item.description.includes("Warning") ? 1 : 0,
-            Failed: item.description.includes("Failed") ? 1 : 0,
-            totalFetched: fetchedExtractor(item),
-          },
-        ],
-      });
-    }
-
-    return acc;
-  }, []);
-  return grouped;
-};
-
-const groupedData = fakeResponse2.reduce((acc, curr) => {
+  const grouped = data.reduce((acc, curr) => {
   // Find or create an entry for the current device
   let deviceEntry = acc.find((item) => item.device_id === curr.device_id);
 
@@ -136,6 +29,7 @@ const groupedData = fakeResponse2.reduce((acc, curr) => {
       device_id: curr.device_id,
       device_name: curr.device_name,
       data: [],
+      noFetchedDates: [],
     };
     acc.push(deviceEntry);
   }
@@ -144,6 +38,7 @@ const groupedData = fakeResponse2.reduce((acc, curr) => {
   let dateEntry = deviceEntry.data.find(
     (item) => item.datestart === curr.datestart
   );
+
 
   if (!dateEntry) {
     dateEntry = {
@@ -158,18 +53,38 @@ const groupedData = fakeResponse2.reduce((acc, curr) => {
   }
 
   // Add log and update counts
-  const fetchedCount = curr.description.match(
-    /(\d+) data fetched successfully/
-  )?.[1];
+  const fetchedCount = curr.description.match(/(\d+) data fetched successfully/)?.[1];
   if (curr.status === "1") {
-    dateEntry.Success++;
-    dateEntry.totalFetched += fetchedCount ? parseInt(fetchedCount, 10) : 0;
+    if(curr.description.includes("Warning")){
+      dateEntry.Warning++;
+
+    } else{
+
+      dateEntry.Success++;
+      dateEntry.totalFetched += fetchedCount ? parseInt(fetchedCount, 10) : 0;
+    }
   } else if (curr.status === "0") {
     dateEntry.Failed++;
   }
 
   dateEntry.logs.push(curr);
 
+if(dateEntry.totalFetched == 0 && !deviceEntry.noFetchedDates.find(item => item == curr.datestart)){
+  deviceEntry.noFetchedDates.push(curr.datestart)
+}if(dateEntry.totalFetched > 0){
+  // deviceEntry.noFetchedDates = deviceEntry.noFetchedDates.filter(item => item === curr.datestart)
+  const index = deviceEntry.noFetchedDates.indexOf(curr.datestart);
+
+// Check if the element exists in the array
+if (index > -1) {
+  // Remove the element at the found index
+  deviceEntry.noFetchedDates.splice(index, 1);
+}
+}
+
   return acc;
 }, []);
-console.log("groupedData", groupedData);
+  return grouped;
+};
+
+
