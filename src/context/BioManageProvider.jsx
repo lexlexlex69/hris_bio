@@ -31,6 +31,13 @@ export const BioContextProvider = ({ children }) => {
     setDisplayData(toDisplay);
   }, [selectDevice]);
 
+  const notificationData = getExecData?.filter(item => item.noFetchedDates.length != 0).map(item => ({
+    ...item,
+    data: item.data.filter(item => item.totalFetched === 0)
+  }))
+
+  
+
   useEffect(() => {
     // setLoading(true);
     // /// --------------     less than or equal || greater than or equal
@@ -64,6 +71,7 @@ export const BioContextProvider = ({ children }) => {
         handleCloseModal,
         modalData,
         open,
+        notificationData
       }}
     >
       {children}

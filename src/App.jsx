@@ -7,6 +7,7 @@ import CustomStack from "./CustomStack"
 import { useBio } from "./context/BioManageProvider"
 import CustomSelectBio from "./components/CustomSelectBio"
 import CustomTableBio from "./components/CustomTableBio"
+import CustomFab from "./components/CustomFab"
 
 function App() {
   const [loading, setLoading] = useState(false)
@@ -17,6 +18,7 @@ function App() {
       <CustomSelectBio />
       {/* <CustomStack items={getExecData} /> */}
       <CustomTableBio />
+      <CustomFab/>
     </div>
   )
 }
