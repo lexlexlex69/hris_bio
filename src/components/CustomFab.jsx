@@ -1,28 +1,29 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Fab from "@mui/material/Fab";
-import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
-import { Badge, Button, useMediaQuery } from "@mui/material";
-import { useBio } from "../context/BioManageProvider";
-import { CustomCenterModal } from "../CustomCenterModal";
-import CustomAccordion from "../CustomAccordion";
-import CustomAccordionNoFetch from "../CustomAccordionNoFetch";
+import * as React from "react"
+import Box from "@mui/material/Box"
+import Fab from "@mui/material/Fab"
+import NotificationImportantIcon from "@mui/icons-material/NotificationImportant"
+import { Badge, Button, useMediaQuery } from "@mui/material"
+import { useBio } from "../context/BioManageProvider"
+import { CustomCenterModal } from "../CustomCenterModal"
+import CustomAccordion from "../CustomAccordion"
+import CustomAccordionNoFetch from "../CustomAccordionNoFetch"
 
 export default function CustomFab() {
   const { notificationData, handleCloseModal, open, modalTitle, modalOpener } =
-    useBio();
-  console.log("notificationData", notificationData);
+    useBio()
+  console.log("notificationData", notificationData)
 
-  const notificationTotalCount = notificationData?.reduce(
-    (acc, curr) => acc + curr.noFetchedDates.length,
-    0
-  );
+  // const notificationTotalCount = notificationData?.reduce(
+  //   (acc, curr) => acc + curr.noFetchedDates.length,
+  //   0
+  // );
+  const notificationTotalCount = notificationData?.length
   return (
     <>
       <CustomModalNoFetch
         openner={open}
         modalTitle={modalTitle}
-        comptitle={"asdfasdf"}
+        comptitle={"nofetchhh"}
         handleCloseBTN={handleCloseModal}
         data={notificationData}
       />
@@ -31,7 +32,7 @@ export default function CustomFab() {
           color="primary"
           aria-label="add"
           onClick={() => {
-            modalOpener("nofetch");
+            modalOpener("nofetch")
           }}
         >
           <Badge badgeContent={notificationTotalCount} color="error">
@@ -40,7 +41,7 @@ export default function CustomFab() {
         </Fab>
       </Box>
     </>
-  );
+  )
 }
 
 function CustomModalNoFetch({
@@ -50,8 +51,17 @@ function CustomModalNoFetch({
   handleCloseBTN,
   data,
 }) {
-  const matches = useMediaQuery("(min-width: 565px)");
-  console.log(data);
+  const matches = useMediaQuery("(min-width: 565px)")
+  console.log(data)
+
+  const handleReExecAll = () => {
+    const payload = data?.map((item) => ({
+      device_id: item.device_id,
+      datestart: item.noFetchedDates[0],
+      dateend: item.noFetchedDates[item.noFetchedDates.length - 1],
+    }))
+    console.log(payload)
+  }
   return (
     <CustomCenterModal
       key={"open1"}
@@ -63,6 +73,9 @@ function CustomModalNoFetch({
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         <Box>
+          <Box>
+            <Button onClick={handleReExecAll}>Re-Execute All</Button>
+          </Box>
           <CustomAccordionNoFetch data={data ? data : []} />
         </Box>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -72,5 +85,5 @@ function CustomModalNoFetch({
         </Box>
       </Box>
     </CustomCenterModal>
-  );
+  )
 }

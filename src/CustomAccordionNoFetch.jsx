@@ -1,16 +1,24 @@
-import * as React from "react";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Button } from "@mui/material";
+import * as React from "react"
+import Accordion from "@mui/material/Accordion"
+import AccordionSummary from "@mui/material/AccordionSummary"
+import AccordionDetails from "@mui/material/AccordionDetails"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import { Button } from "@mui/material"
 
 export default function CustomAccordionNoFetch({ data }) {
-  console.log(data);
-  const handleButtonClick = (event, deviceId) => {
-    event.stopPropagation(); // Prevents accordion expansion
-    console.log(`Reload clicked for device: ${deviceId}`);
-  };
+  console.log(data)
+  const handleButtonClick = (event, device_id, dates) => {
+    event.stopPropagation() // Prevents accordion expansion
+    const payload = [
+      {
+        device_id,
+        datestart: dates[0],
+        dateend: dates[dates.length - 1],
+      },
+    ]
+    console.log(payload)
+    // console.log(`Reload clicked for device: ${deviceId}`);
+  }
   return (
     <div>
       {data?.map((item, index) => (
@@ -25,7 +33,9 @@ export default function CustomAccordionNoFetch({ data }) {
           >
             {item.device_name}
             <Button
-              onClick={(event) => handleButtonClick(event, item.device_id)}
+              onClick={(event) =>
+                handleButtonClick(event, item.device_id, item.noFetchedDates)
+              }
               onFocus={(event) => event.stopPropagation()} // Prevents expansion when tabbing to the button
             >
               Reload
@@ -42,5 +52,5 @@ export default function CustomAccordionNoFetch({ data }) {
         </Accordion>
       ))}
     </div>
-  );
+  )
 }

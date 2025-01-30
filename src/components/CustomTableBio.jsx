@@ -1,18 +1,19 @@
-import * as React from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import { useBio } from "../context/BioManageProvider";
-import { Box, Button, Stack, useMediaQuery } from "@mui/material";
-import { CustomCenterModal } from "../CustomCenterModal";
-import CustomAccordion from "../CustomAccordion";
+import * as React from "react"
+import { DataGrid } from "@mui/x-data-grid"
+import { useBio } from "../context/BioManageProvider"
+import { Box, Button, Stack, useMediaQuery } from "@mui/material"
+import { CustomCenterModal } from "../CustomCenterModal"
+import CustomAccordion from "../CustomAccordion"
 
 export default function CustomTableBio() {
   const {
     displayData,
-    handleTableRowClick,
+    modalTitle,
     modalData,
     handleCloseModal,
     open,
-  } = useBio();
+    modalOpener,
+  } = useBio()
   const columns = [
     {
       field: "datestart",
@@ -53,10 +54,10 @@ export default function CustomTableBio() {
 
       renderCell: (params) => {
         const onClick = (e) => {
-          const currentRow = params.row;
-          currentRow && handleTableRowClick(currentRow.datestart);
+          const currentRow = params.row
+          currentRow && modalOpener("table", currentRow.datestart)
           // return alert(JSON.stringify(currentRow, null, 4))
-        };
+        }
 
         return (
           <Stack direction="row" spacing={2}>
@@ -69,7 +70,7 @@ export default function CustomTableBio() {
               Edit
             </Button>
           </Stack>
-        );
+        )
       },
     },
     // {
@@ -80,19 +81,20 @@ export default function CustomTableBio() {
     //   width: 160,
     //   valueGetter: (value, row) => `${row.firstName || ""} ${row.lastName || ""}`,
     // },
-  ];
-  const row = displayData && displayData.data;
+  ]
+  const row = displayData && displayData.data
   function getRowId(row) {
-    return row.datestart;
+    return row.datestart
   }
 
   return (
     <div style={{ height: 400, width: "100%" }}>
       <CustomModalDisplay
         openner={open}
-        comptitle={"asdfasdf"}
+        comptitle={"table"}
         handleCloseBTN={handleCloseModal}
         data={modalData}
+        modalTitle={modalTitle}
       />
       <DataGrid
         rows={row}
@@ -107,18 +109,24 @@ export default function CustomTableBio() {
         // checkboxSelection
       />
     </div>
-  );
+  )
 }
 
-function CustomModalDisplay({ openner, comptitle, handleCloseBTN, data }) {
-  const matches = useMediaQuery("(min-width: 565px)");
-  console.log(data);
+function CustomModalDisplay({
+  openner,
+  comptitle,
+  handleCloseBTN,
+  data,
+  modalTitle,
+}) {
+  const matches = useMediaQuery("(min-width: 565px)")
+  console.log(data)
   return (
     <CustomCenterModal
       key={"open1"}
       compSize={"40%"}
       matches={matches}
-      openner={openner}
+      openner={openner && modalTitle === "table"}
       comptitle={comptitle}
       handleCloseBTN={handleCloseBTN}
     >
@@ -133,5 +141,5 @@ function CustomModalDisplay({ openner, comptitle, handleCloseBTN, data }) {
         </Box>
       </Box>
     </CustomCenterModal>
-  );
+  )
 }
