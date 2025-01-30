@@ -1,49 +1,49 @@
-import { createContext, useContext, useEffect, useState } from "react"
-import { filterData, groupByDevice } from "../process"
-import { fakeResponse2 } from "../fakeData"
+import { createContext, useContext, useEffect, useState } from "react";
+import { filterData, groupByDevice } from "../process";
+import { fakeResponse2 } from "../fakeData";
 
-const BioStateContext = createContext()
+const BioStateContext = createContext();
 
 export const BioContextProvider = ({ children }) => {
-  const [getExecData, setGetExecData] = useState()
-  const [selectDevice, setSelectDevice] = useState()
-  const [displayData, setDisplayData] = useState()
-  const [modalData, setModalData] = useState()
-  const [open, setOpen] = useState(false)
-  const [modalTitle, setModalTitle] = useState("")
+  const [getExecData, setGetExecData] = useState();
+  const [selectDevice, setSelectDevice] = useState(null);
+  const [displayData, setDisplayData] = useState();
+  const [modalData, setModalData] = useState();
+  const [open, setOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
 
   const handleTableRowClick = (date) => {
-    setOpen(true)
-    const toModal = displayData?.data.find((item) => item.datestart == date)
-    console.log("toModal", toModal)
-    setModalData(toModal)
-  }
+    setOpen(true);
+    const toModal = displayData?.data.find((item) => item.datestart == date);
+    console.log("toModal", toModal);
+    setModalData(toModal);
+  };
 
   const modalOpener = (title) => {
-    setOpen(true)
-    setModalTitle(title)
-  }
+    setOpen(true);
+    setModalTitle(title);
+  };
 
   const handleCloseModal = () => {
-    setOpen(false)
-    setModalTitle("")
-    setModalData([])
-  }
+    setOpen(false);
+    setModalTitle("");
+    setModalData([]);
+  };
 
   useEffect(() => {
     const toDisplay = getExecData?.find(
-      (item, index) => item.device_id == selectDevice
-    )
-    console.log("toDisplay", toDisplay)
-    setDisplayData(toDisplay)
-  }, [selectDevice])
+      (item, index) => item.device_id == selectDevice?.device_id
+    );
+    console.log("toDisplay", toDisplay);
+    setDisplayData(toDisplay);
+  }, [selectDevice]);
 
   const notificationData = getExecData
     ?.filter((item) => item.noFetchedDates.length != 0)
     .map((item) => ({
       ...item,
-      data: item.data.filter((item) => item.totalFetched === 0),
-    }))
+      data: item.data.filter((item) => item.Success === 0),
+    }));
 
   useEffect(() => {
     // setLoading(true);
@@ -62,10 +62,10 @@ export const BioContextProvider = ({ children }) => {
     //   .finally(() => setLoading(false));
     // const filteredExec = filterData(fakeResponse2, 0)
     // setGetExecData(filteredExec)
-    console.log("groupfilteredExec", groupByDevice(fakeResponse2))
+    console.log("groupfilteredExec", groupByDevice(fakeResponse2));
     // console.log("show0status", filterData(fakeResponse2, "show0status"))
-    setGetExecData(groupByDevice(fakeResponse2))
-  }, [])
+    setGetExecData(groupByDevice(fakeResponse2));
+  }, []);
 
   return (
     <BioStateContext.Provider
@@ -85,7 +85,7 @@ export const BioContextProvider = ({ children }) => {
     >
       {children}
     </BioStateContext.Provider>
-  )
-}
+  );
+};
 
-export const useBio = () => useContext(BioStateContext)
+export const useBio = () => useContext(BioStateContext);

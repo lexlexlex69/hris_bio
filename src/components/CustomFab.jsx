@@ -1,22 +1,22 @@
-import * as React from "react"
-import Box from "@mui/material/Box"
-import Fab from "@mui/material/Fab"
-import NotificationImportantIcon from "@mui/icons-material/NotificationImportant"
-import { Badge, Button, useMediaQuery } from "@mui/material"
-import { useBio } from "../context/BioManageProvider"
-import { CustomCenterModal } from "../CustomCenterModal"
-import CustomAccordion from "../CustomAccordion"
-import CustomAccordionNoFetch from "../CustomAccordionNoFetch"
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Fab from "@mui/material/Fab";
+import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
+import { Badge, Button, useMediaQuery } from "@mui/material";
+import { useBio } from "../context/BioManageProvider";
+import { CustomCenterModal } from "../CustomCenterModal";
+import CustomAccordion from "../CustomAccordion";
+import CustomAccordionNoFetch from "../CustomAccordionNoFetch";
 
 export default function CustomFab() {
   const { notificationData, handleCloseModal, open, modalTitle, modalOpener } =
-    useBio()
-  console.log("notificationData", notificationData)
+    useBio();
+  console.log("notificationData", notificationData);
 
   const notificationTotalCount = notificationData?.reduce(
     (acc, curr) => acc + curr.noFetchedDates.length,
     0
-  )
+  );
   return (
     <>
       <CustomModalNoFetch
@@ -31,7 +31,7 @@ export default function CustomFab() {
           color="primary"
           aria-label="add"
           onClick={() => {
-            modalOpener("nofetch")
+            modalOpener("nofetch");
           }}
         >
           <Badge badgeContent={notificationTotalCount} color="error">
@@ -40,7 +40,7 @@ export default function CustomFab() {
         </Fab>
       </Box>
     </>
-  )
+  );
 }
 
 function CustomModalNoFetch({
@@ -50,8 +50,8 @@ function CustomModalNoFetch({
   handleCloseBTN,
   data,
 }) {
-  const matches = useMediaQuery("(min-width: 565px)")
-  console.log(data)
+  const matches = useMediaQuery("(min-width: 565px)");
+  console.log(data);
   return (
     <CustomCenterModal
       key={"open1"}
@@ -63,7 +63,6 @@ function CustomModalNoFetch({
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         <Box>
-          sdfsdf
           <CustomAccordionNoFetch data={data ? data : []} />
         </Box>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -73,5 +72,5 @@ function CustomModalNoFetch({
         </Box>
       </Box>
     </CustomCenterModal>
-  )
+  );
 }

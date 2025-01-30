@@ -8663,7 +8663,7 @@ export const fakeResponse = [
     status: "0",
     description: "Failed: Cannot connect to Biometric Device.",
   },
-]
+];
 
 export const fakeResponse2 = [
   {
@@ -15401,8 +15401,8 @@ export const fakeResponse2 = [
     device_id: "4",
     device_name: "BCH 2nd Floor: CBMD Entrance",
     datetime_loaded: "2024-10-19 21:17:46",
-    status: "0",
-    description: "Failed: Cannot connect to Biometric Device.",
+    status: "1",
+    description: "Success: There are 407 data fetched successfully.",
     datestart: "2024-10-19",
     dateend: "2024-10-19",
   },
@@ -23766,4 +23766,4 @@ export const fakeResponse2 = [
     datestart: "2024-10-16",
     dateend: "2024-10-21",
   },
-]
+];
