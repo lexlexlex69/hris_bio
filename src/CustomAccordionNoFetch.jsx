@@ -1,26 +1,26 @@
-import * as React from "react"
-import Accordion from "@mui/material/Accordion"
-import AccordionSummary from "@mui/material/AccordionSummary"
-import AccordionDetails from "@mui/material/AccordionDetails"
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import { Button } from "@mui/material"
+import * as React from "react";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Box, Button } from "@mui/material";
 
 export default function CustomAccordionNoFetch({ data }) {
-  console.log(data)
+  console.log(data);
   const handleButtonClick = (event, device_id, dates) => {
-    event.stopPropagation() // Prevents accordion expansion
+    event.stopPropagation(); // Prevents accordion expansion
     const payload = [
       {
         device_id,
         datestart: dates[0],
         dateend: dates[dates.length - 1],
       },
-    ]
-    console.log(payload)
+    ];
+    console.log(payload);
     // console.log(`Reload clicked for device: ${deviceId}`);
-  }
+  };
   return (
-    <div>
+    <>
       {data?.map((item, index) => (
         <Accordion
           key={index}
@@ -31,15 +31,25 @@ export default function CustomAccordionNoFetch({ data }) {
             aria-controls={item.device_id}
             id={item.device_id}
           >
-            {item.device_name}
-            <Button
-              onClick={(event) =>
-                handleButtonClick(event, item.device_id, item.noFetchedDates)
-              }
-              onFocus={(event) => event.stopPropagation()} // Prevents expansion when tabbing to the button
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
             >
-              Reload
-            </Button>
+              {item.device_name}
+              <Button
+                variant="contained"
+                onClick={(event) =>
+                  handleButtonClick(event, item.device_id, item.noFetchedDates)
+                }
+                onFocus={(event) => event.stopPropagation()} // Prevents expansion when tabbing to the button
+              >
+                Reload
+              </Button>
+            </Box>
           </AccordionSummary>
           <AccordionDetails>
             {item.data.map((item) => (
@@ -51,6 +61,6 @@ export default function CustomAccordionNoFetch({ data }) {
           </AccordionDetails>
         </Accordion>
       ))}
-    </div>
-  )
+    </>
+  );
 }

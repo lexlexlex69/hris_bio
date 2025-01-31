@@ -1,9 +1,9 @@
-import * as React from "react"
-import { DataGrid } from "@mui/x-data-grid"
-import { useBio } from "../context/BioManageProvider"
-import { Box, Button, Stack, useMediaQuery } from "@mui/material"
-import { CustomCenterModal } from "../CustomCenterModal"
-import CustomAccordion from "../CustomAccordion"
+import * as React from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import { useBio } from "../context/BioManageProvider";
+import { Box, Button, Stack, useMediaQuery } from "@mui/material";
+import { CustomCenterModal } from "../CustomCenterModal";
+import CustomAccordion from "../CustomAccordion";
 
 export default function CustomTableBio() {
   const {
@@ -13,64 +13,88 @@ export default function CustomTableBio() {
     handleCloseModal,
     open,
     modalOpener,
-  } = useBio()
+  } = useBio();
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    }).format(date);
+  };
   const columns = [
+    {
+      field: "Device Name",
+      headerName: "Device name",
+      // description: "This column has a value getter and is not sortable.",
+      sortable: false,
+      // width: "auto",
+      flex: 1,
+      valueGetter: (value, row) => `${row.logs[0].device_name} `,
+    },
     {
       field: "datestart",
       headerName: "Date",
-      width: 100,
+      // width: 100,
+      flex: 1,
       disableClickEventBubbling: true,
+      valueGetter: (value, row) => `${formatDate(row.datestart)} `,
     },
     {
       field: "Success",
       headerName: "Success",
-      width: 130,
+      // width: 130,
+      flex: 0.5,
       disableClickEventBubbling: true,
     },
     {
       field: "Failed",
       headerName: "Failed",
-      width: 130,
+      // width: 130,
+      flex: 0.5,
       disableClickEventBubbling: true,
     },
     {
       field: "Warning",
       headerName: "Warning",
-      width: 130,
+      // width: 130,
+      flex: 0.5,
       disableClickEventBubbling: true,
     },
     {
       field: "totalFetched",
       headerName: "Total fetch",
-      width: 130,
+      // width: 130,
+      flex: 0.5,
       disableClickEventBubbling: true,
     },
     {
       field: "action",
       headerName: "Action",
-      width: 180,
+      // width: 180,
       sortable: false,
+      flex: 0.5,
       disableClickEventBubbling: true,
 
       renderCell: (params) => {
         const onClick = (e) => {
-          const currentRow = params.row
-          currentRow && modalOpener("table", currentRow.datestart)
+          const currentRow = params.row;
+          currentRow && modalOpener("table", currentRow.datestart);
           // return alert(JSON.stringify(currentRow, null, 4))
-        }
+        };
 
         return (
-          <Stack direction="row" spacing={2}>
+          <Box>
             <Button
               variant="outlined"
               color="warning"
               size="small"
               onClick={onClick}
             >
-              Edit
+              Open
             </Button>
-          </Stack>
-        )
+          </Box>
+        );
       },
     },
     // {
@@ -81,14 +105,14 @@ export default function CustomTableBio() {
     //   width: 160,
     //   valueGetter: (value, row) => `${row.firstName || ""} ${row.lastName || ""}`,
     // },
-  ]
-  const row = displayData && displayData.data
+  ];
+  const row = displayData && displayData.data;
   function getRowId(row) {
-    return row.datestart
+    return row.datestart;
   }
 
   return (
-    <div style={{ height: 400, width: "100%" }}>
+    <div style={{ height: "auto", width: "100%" }}>
       <CustomModalDisplay
         openner={open}
         comptitle={"table"}
@@ -96,20 +120,22 @@ export default function CustomTableBio() {
         data={modalData}
         modalTitle={modalTitle}
       />
-      <DataGrid
-        rows={row}
-        getRowId={getRowId}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 10 },
-          },
-        }}
-        pageSizeOptions={[10, 20]}
-        // checkboxSelection
-      />
+      <div style={{ display: "flex", height: "100%", width: "100%" }}>
+        <DataGrid
+          rows={row}
+          getRowId={getRowId}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 10 },
+            },
+          }}
+          pageSizeOptions={[10, 20]}
+          // checkboxSelection
+        />
+      </div>
     </div>
-  )
+  );
 }
 
 function CustomModalDisplay({
@@ -119,8 +145,8 @@ function CustomModalDisplay({
   data,
   modalTitle,
 }) {
-  const matches = useMediaQuery("(min-width: 565px)")
-  console.log(data)
+  const matches = useMediaQuery("(min-width: 565px)");
+  console.log(data);
   return (
     <CustomCenterModal
       key={"open1"}
@@ -141,5 +167,5 @@ function CustomModalDisplay({
         </Box>
       </Box>
     </CustomCenterModal>
-  )
+  );
 }
