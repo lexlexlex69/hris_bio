@@ -18,14 +18,14 @@ function CustomManualReExec() {
   const { handleCloseModal, open, modalTitle, modalOpener, getExecData } =
     useBio();
   const handleClick = () => {
-    modalOpener("manualfetch");
+    modalOpener("Manual Re-Exec");
   };
   return (
     <>
       <CustomModalManualReExec
         openner={open}
         modalTitle={modalTitle}
-        comptitle={"manual"}
+        comptitle={modalTitle}
         handleCloseBTN={handleCloseModal}
         // data={notificationData}
         getExecData={getExecData}
@@ -77,7 +77,7 @@ function CustomModalManualReExec({
       key={"open1"}
       compSize={"40%"}
       matches={matches}
-      openner={openner && modalTitle === "manualfetch"}
+      openner={openner && modalTitle === "Manual Re-Exec"}
       comptitle={comptitle}
       handleCloseBTN={handleCloseBTN}
     >

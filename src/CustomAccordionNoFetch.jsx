@@ -3,7 +3,9 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Divider, Typography } from "@mui/material";
+import CustomSubTable from "./components/CustomSubTable";
+import { formatDate } from "./utils/datetimeformat";
 
 export default function CustomAccordionNoFetch({ data }) {
   console.log(data);
@@ -52,13 +54,46 @@ export default function CustomAccordionNoFetch({ data }) {
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            {item.data.map((item) => (
+            {item.data.map((item, index) => (
               <>
-                <p>{item.datestart}</p>
-                <p>{item.Success + item.Failed}</p>
+                <Box sx={{ display: "flex" }}>
+                  <Typography
+                    sx={{
+                      padding: "10px 5px",
+                      borderRadius: "5px",
+                      width: "50%",
+                    }}
+                  >
+                    {formatDate(item.datestart)}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      padding: "10px 5px",
+                      borderRadius: "5px",
+                      width: "50%",
+                    }}
+                  >
+                    {"Attempts: "}
+                    {item.Success + item.Failed + item.Warning}
+                  </Typography>
+                </Box>
+                {!(index == item?.data?.length - 1) && <Divider />}
               </>
             ))}
           </AccordionDetails>
+          {/* <AccordionDetails>
+            <CustomSubTable data={item.data} />
+            {item.data.map((item) => (
+              <>
+                <Typography>
+                  <p>
+                    Date: {item.datestart} Attempts:{" "}
+                    {item.Success + item.Failed}
+                  </p>
+                </Typography>
+              </>
+            ))}
+          </AccordionDetails> */}
         </Accordion>
       ))}
     </>

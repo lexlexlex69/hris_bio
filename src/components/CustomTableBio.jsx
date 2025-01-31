@@ -4,6 +4,7 @@ import { useBio } from "../context/BioManageProvider";
 import { Box, Button, Stack, useMediaQuery } from "@mui/material";
 import { CustomCenterModal } from "../CustomCenterModal";
 import CustomAccordion from "../CustomAccordion";
+import { formatDate } from "../utils/datetimeformat";
 
 export default function CustomTableBio() {
   const {
@@ -14,14 +15,7 @@ export default function CustomTableBio() {
     open,
     modalOpener,
   } = useBio();
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  };
+
   const columns = [
     {
       field: "Device Name",
@@ -75,23 +69,49 @@ export default function CustomTableBio() {
       sortable: false,
       flex: 0.5,
       disableClickEventBubbling: true,
+      headerAlign: "center",
 
       renderCell: (params) => {
         const onClick = (e) => {
           const currentRow = params.row;
-          currentRow && modalOpener("table", currentRow.datestart);
+          currentRow && modalOpener("Execution Log", currentRow.datestart);
           // return alert(JSON.stringify(currentRow, null, 4))
         };
 
+        const reexec = (e) => {
+          const currentRow = params.row;
+          const payload = [
+            {
+              device_id: currentRow.logs[0].device_id,
+              datestart: currentRow.datestart,
+              dateend: currentRow.datestart,
+            },
+          ];
+          currentRow && console.log(payload);
+        };
+
         return (
-          <Box>
+          <Box
+            sx={{
+              // bgcolor: "red",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+            }}
+          >
             <Button
               variant="outlined"
               color="warning"
               size="small"
               onClick={onClick}
+              // sx={{ marginRight: "10px" }}
             >
               Open
+            </Button>
+            <Button variant="contained" size="small" onClick={reexec}>
+              Re-Exec
             </Button>
           </Box>
         );
@@ -115,7 +135,7 @@ export default function CustomTableBio() {
     <div style={{ height: "auto", width: "100%" }}>
       <CustomModalDisplay
         openner={open}
-        comptitle={"table"}
+        comptitle={modalTitle}
         handleCloseBTN={handleCloseModal}
         data={modalData}
         modalTitle={modalTitle}
@@ -152,7 +172,7 @@ function CustomModalDisplay({
       key={"open1"}
       compSize={"40%"}
       matches={matches}
-      openner={openner && modalTitle === "table"}
+      openner={openner && modalTitle === "Execution Log"}
       comptitle={comptitle}
       handleCloseBTN={handleCloseBTN}
     >

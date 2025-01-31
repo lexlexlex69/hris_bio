@@ -10,11 +10,11 @@ import CustomTableBio from "./components/CustomTableBio";
 import CustomFab from "./components/CustomFab";
 import CustomAutoComplete from "./components/CustomAutoComplete";
 import CustomManualReExec from "./components/CustomManualReExec";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
 function App() {
   const [loading, setLoading] = useState(false);
-  const { getExecData } = useBio();
+  const { getExecData, handleDisplay } = useBio();
 
   return (
     <Box sx={{ width: "100vw", height: "100vh" }}>
@@ -26,7 +26,17 @@ function App() {
             justifyContent: "space-between",
           }}
         >
-          <CustomAutoComplete />
+          <Box
+            sx={{
+              display: "flex",
+              gap: "10px",
+            }}
+          >
+            <CustomAutoComplete />
+            <Button variant="contained" onClick={handleDisplay}>
+              Display
+            </Button>
+          </Box>
           <Box
             sx={{
               display: "flex",

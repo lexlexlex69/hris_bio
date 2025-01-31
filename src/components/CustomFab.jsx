@@ -23,7 +23,7 @@ export default function CustomFab() {
       <CustomModalNoFetch
         openner={open}
         modalTitle={modalTitle}
-        comptitle={"nofetchhh"}
+        comptitle={modalTitle}
         handleCloseBTN={handleCloseModal}
         data={notificationData}
       />
@@ -34,7 +34,7 @@ export default function CustomFab() {
           color="primary"
           aria-label="add"
           onClick={() => {
-            modalOpener("nofetch");
+            modalOpener("Failed Fetch");
           }}
         >
           <Badge badgeContent={notificationTotalCount} color="error">
@@ -69,7 +69,7 @@ function CustomModalNoFetch({
       key={"open1"}
       compSize={"40%"}
       matches={matches}
-      openner={openner && modalTitle === "nofetch"}
+      openner={openner && modalTitle === "Failed Fetch"}
       comptitle={comptitle}
       handleCloseBTN={handleCloseBTN}
     >
