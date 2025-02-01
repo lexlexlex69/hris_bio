@@ -54,6 +54,7 @@ function CustomModalNoFetch({
   data,
 }) {
   const matches = useMediaQuery("(min-width: 565px)");
+  const { handleReExec } = useBio();
   console.log(data);
 
   const handleReExecAll = () => {
@@ -63,6 +64,7 @@ function CustomModalNoFetch({
       dateend: item.noFetchedDates[item.noFetchedDates.length - 1],
     }));
     console.log(payload);
+    handleReExec(payload);
   };
   return (
     <CustomCenterModal
@@ -78,7 +80,7 @@ function CustomModalNoFetch({
           Re-Execute All
         </Button>
 
-        <Box sx={{ overflow: "auto", height: "60vh" }}>
+        <Box sx={{ overflow: "auto", height: "60vh", padding: "5px 0px" }}>
           <CustomAccordionNoFetch data={data ? data : []} />
         </Box>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>

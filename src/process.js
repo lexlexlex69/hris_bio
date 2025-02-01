@@ -76,7 +76,7 @@ export const groupByDevice = (data) => {
     ) {
       deviceEntry.noFetchedDates.push(curr.datestart);
     }
-    if (dateEntry.Success > 0) {
+    if (dateEntry.Success > 0 || dateEntry.Warning > 0) {
       // deviceEntry.noFetchedDates = deviceEntry.noFetchedDates.filter(item => item === curr.datestart)
       const index = deviceEntry.noFetchedDates.indexOf(curr.datestart);
 

@@ -29,6 +29,7 @@ export default function CustomAccordion({ data }) {
       {data?.logs?.map((item, index) => (
         <Accordion
           key={index}
+          disableGutters
           //  defaultExpanded
         >
           <AccordionSummary
@@ -36,7 +37,10 @@ export default function CustomAccordion({ data }) {
             aria-controls={item.datestart}
             id={item.datestart}
           >
-            <Typography>{formatDateTime(item.datetime_loaded)}</Typography>
+            <Typography>
+              {formatDateTime(item.datetime_loaded)}
+              {item.id}
+            </Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography

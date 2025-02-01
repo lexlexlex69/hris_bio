@@ -6,8 +6,10 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import CustomSubTable from "./components/CustomSubTable";
 import { formatDate } from "./utils/datetimeformat";
+import { useBio } from "./context/BioManageProvider";
 
 export default function CustomAccordionNoFetch({ data }) {
+  const { handleReExec } = useBio();
   console.log(data);
   const handleButtonClick = (event, device_id, dates) => {
     event.stopPropagation(); // Prevents accordion expansion
@@ -19,6 +21,7 @@ export default function CustomAccordionNoFetch({ data }) {
       },
     ];
     console.log(payload);
+    // handleReExec(payload);
     // console.log(`Reload clicked for device: ${deviceId}`);
   };
   return (
@@ -26,6 +29,7 @@ export default function CustomAccordionNoFetch({ data }) {
       {data?.map((item, index) => (
         <Accordion
           key={index}
+          disableGutters
           //  defaultExpanded
         >
           <AccordionSummary
@@ -41,7 +45,7 @@ export default function CustomAccordionNoFetch({ data }) {
                 alignItems: "center",
               }}
             >
-              {item.device_name}
+              {item.device_name}({item.data.length})
               <Button
                 variant="contained"
                 onClick={(event) =>

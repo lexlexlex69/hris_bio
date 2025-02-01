@@ -14,6 +14,7 @@ export default function CustomTableBio() {
     handleCloseModal,
     open,
     modalOpener,
+    handleReExec,
   } = useBio();
 
   const columns = [
@@ -88,6 +89,7 @@ export default function CustomTableBio() {
             },
           ];
           currentRow && console.log(payload);
+          handleReExec(payload);
         };
 
         return (

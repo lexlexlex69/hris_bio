@@ -45,6 +45,7 @@ function CustomModalManualReExec({
   getExecData,
 }) {
   const matches = useMediaQuery("(min-width: 565px)");
+  const { handleReExec } = useBio();
   // console.log(data)
 
   const [payload, setPayload] = useState({
@@ -69,8 +70,8 @@ function CustomModalManualReExec({
         dateend: payload.dateend ? format(payload.dateend, "yyyy-MM-dd") : "",
       },
     ];
-
     console.log(formattedPayload);
+    handleReExec(formattedPayload);
   };
   return (
     <CustomCenterModal

@@ -1,16 +1,33 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { filterData, groupByDevice } from "../process";
 import { fakeResponse2 } from "../fakeData";
+import { currentMonth, currentYear, monthList } from "../utils/datetimeformat";
+import { getExecLogs, reExec } from "../utils/requests";
 
 const BioStateContext = createContext();
 
 export const BioContextProvider = ({ children }) => {
+  const [date, setDate] = useState({
+    month: null,
+    year: null,
+  });
+  console.log(date);
   const [getExecData, setGetExecData] = useState();
   const [selectDevice, setSelectDevice] = useState(null);
   const [displayData, setDisplayData] = useState();
   const [modalData, setModalData] = useState();
   const [open, setOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
+
+  if (!date?.month && !date?.month) {
+    const currentMonthConvert = monthList.find(
+      (item) => item.id == currentMonth
+    );
+    setDate({
+      month: currentMonthConvert,
+      year: currentYear,
+    });
+  }
 
   const handleTableRowClick = (date) => {
     setOpen(true);
@@ -53,31 +70,40 @@ export const BioContextProvider = ({ children }) => {
       data: item.data.filter((item) => item.Success === 0),
     }));
 
+  const handleReExec = async (payload) => {
+    reExec(payload)
+      .then((response) => {
+        console.log("responseapi", response);
+      })
+      .catch((err) => console.log(err));
+  };
+
   useEffect(() => {
     // setLoading(true);
     // /// --------------     less than or equal || greater than or equal
-    // getExecLogs({ datestart: "2024-10-11", dateend: "2024-10-21" })
-    //   .then((response) => {
-    //     // console.log("response.data", response.data);
-    //     const filteredExec = response?.data && filterData(response.data, 2);
-    //     setGetExecData(filteredExec);
-    //     // setGetExecData(response.data);
-    //     response?.data &&
-    //       console.log("groupfilteredExec", groupByDevice(response.data));
-    //     // console.log("filteredExec", filteredExec);
-    //   })
-    //   .catch((err) => console.log(err))
-    //   .finally(() => setLoading(false));
-    // const filteredExec = filterData(fakeResponse2, 0)
-    // setGetExecData(filteredExec)
-    console.log("groupfilteredExec", groupByDevice(fakeResponse2));
-    // console.log("show0status", filterData(fakeResponse2, "show0status"))
-    setGetExecData(groupByDevice(fakeResponse2));
-  }, []);
+    date?.month &&
+      date?.month &&
+      getExecLogs({
+        datestart: `${date.year}-${date.month.id}-01`,
+        dateend: `${date.year}-${date.month.id}-31`,
+      })
+        .then((response) => {
+          console.log("responseapi", response);
+          console.log("responseapiconverted", groupByDevice(response.data));
+          setGetExecData(groupByDevice(response.data));
+        })
+        .catch((err) => console.log(err));
+
+    // console.log("groupfilteredExec", groupByDevice(fakeResponse2));
+    // // console.log("show0status", filterData(fakeResponse2, "show0status"))
+    // setGetExecData(groupByDevice(fakeResponse2));
+  }, [date]);
 
   return (
     <BioStateContext.Provider
       value={{
+        date,
+        setDate,
         getExecData,
         selectDevice,
         setSelectDevice,
@@ -90,6 +116,7 @@ export const BioContextProvider = ({ children }) => {
         modalOpener,
         notificationData,
         handleDisplay,
+        handleReExec,
       }}
     >
       {children}

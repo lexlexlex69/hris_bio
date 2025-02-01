@@ -11,6 +11,19 @@ import CustomFab from "./components/CustomFab";
 import CustomAutoComplete from "./components/CustomAutoComplete";
 import CustomManualReExec from "./components/CustomManualReExec";
 import { Box, Button } from "@mui/material";
+import axios from "axios";
+
+axios.defaults.baseURL = "http://127.0.0.1:8000";
+axios.defaults.withCredentials = true;
+axios.defaults.withXSRFToken = true;
+axios.defaults.headers.post["Content-Type"] = "application/json";
+axios.defaults.headers.post["Accept"] = "application/json";
+
+axios.interceptors.request.use((config) => {
+  const token = "178531|oZTtJNSmwXebJVlokYeJzT8yxNyHua77bd7zetsh";
+  config.headers.Authorization = token ? `Bearer ${token}` : "";
+  return config;
+});
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -37,6 +50,7 @@ function App() {
               Display
             </Button>
           </Box>
+
           <Box
             sx={{
               display: "flex",
