@@ -1,13 +1,22 @@
-import * as React from "react"
-import { DataGrid } from "@mui/x-data-grid"
-import { useBio } from "../context/BioManageProvider"
-import { Box, Button, Chip, Stack, useMediaQuery } from "@mui/material"
-import { CustomCenterModal } from "../CustomCenterModal"
-import CustomAccordion from "../CustomAccordion"
-import { formatDate } from "../utils/datetimeformat"
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth"
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord"
-import EqualizerIcon from "@mui/icons-material/Equalizer"
+import * as React from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import { useBio } from "../context/BioManageProvider";
+import {
+  Box,
+  Button,
+  Chip,
+  Menu,
+  MenuItem,
+  Stack,
+  useMediaQuery,
+} from "@mui/material";
+import { CustomCenterModal } from "../CustomCenterModal";
+import CustomAccordion from "../CustomAccordion";
+import { formatDate } from "../utils/datetimeformat";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import EqualizerIcon from "@mui/icons-material/Equalizer";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export default function CustomTableBio() {
   const {
@@ -18,7 +27,7 @@ export default function CustomTableBio() {
     open,
     modalOpener,
     handleReExec,
-  } = useBio()
+  } = useBio();
 
   const columns = [
     {
@@ -45,12 +54,12 @@ export default function CustomTableBio() {
       disableClickEventBubbling: true,
       valueGetter: (value, row) => `${formatDate(row.datestart)} `,
       renderCell: (params) => {
-        const currentRow = params.row
+        const currentRow = params.row;
         const onClick = (e) => {
-          console.log("currentRow", currentRow)
-          currentRow && modalOpener("Execution Log", currentRow.datestart)
+          console.log("currentRow", currentRow);
+          currentRow && modalOpener("Execution Log", currentRow.datestart);
           // return alert(JSON.stringify(currentRow, null, 4))
-        }
+        };
 
         return (
           <Box
@@ -73,7 +82,7 @@ export default function CustomTableBio() {
             />
             {/* <CalendarMonthIcon /> */}
           </Box>
-        )
+        );
       },
     },
     {
@@ -133,30 +142,36 @@ export default function CustomTableBio() {
       headerName: "Action",
       // width: 180,
       sortable: false,
-      flex: 0.9,
+      flex: 0.2,
       disableClickEventBubbling: true,
       headerAlign: "center",
 
       renderCell: (params) => {
         const onClick = (e) => {
-          const currentRow = params.row
-          currentRow && modalOpener("Execution Log", currentRow.datestart)
+          const currentRow = params.row;
+          currentRow && modalOpener("Execution Log", currentRow.datestart);
           // return alert(JSON.stringify(currentRow, null, 4))
-        }
+        };
 
         const reexec = (e) => {
-          const currentRow = params.row
+          const currentRow = params.row;
           const payload = [
             {
               device_id: currentRow.logs[0].device_id,
-              datestart: currentRow.datestart,
-              dateend: currentRow.datestart,
+              dates: [currentRow.datestart],
             },
-          ]
-          currentRow && console.log(payload)
-          handleReExec(payload)
-        }
-
+          ];
+          // currentRow && console.log(payload);
+          handleReExec(payload);
+        };
+        const [anchorEl, setAnchorEl] = React.useState(null);
+        const open = Boolean(anchorEl);
+        const handleClick = (event) => {
+          setAnchorEl(event.currentTarget);
+        };
+        const handleClose = () => {
+          setAnchorEl(null);
+        };
         return (
           <Box
             sx={{
@@ -164,11 +179,32 @@ export default function CustomTableBio() {
               height: "100%",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "flex-end",
               gap: "10px",
             }}
           >
             <Button
+              id="basic-button"
+              aria-controls={open ? "basic-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              onClick={handleClick}
+            >
+              <MoreVertIcon />
+            </Button>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem onClick={onClick}>Open</MenuItem>
+              <MenuItem onClick={reexec}>Re-Exec</MenuItem>
+            </Menu>
+            {/* <Button
               variant="outlined"
               color="warning"
               size="small"
@@ -179,23 +215,15 @@ export default function CustomTableBio() {
             </Button>
             <Button variant="contained" size="small" onClick={reexec}>
               Re-Exec
-            </Button>
+            </Button> */}
           </Box>
-        )
+        );
       },
     },
-    // {
-    //   field: "fullName",
-    //   headerName: "Full name",
-    //   description: "This column has a value getter and is not sortable.",
-    //   sortable: false,
-    //   width: 160,
-    //   valueGetter: (value, row) => `${row.firstName || ""} ${row.lastName || ""}`,
-    // },
-  ]
-  const row = displayData && displayData.data
+  ];
+  const row = displayData && displayData.data;
   function getRowId(row) {
-    return row.datestart
+    return row.datestart;
   }
 
   return (
@@ -231,7 +259,6 @@ export default function CustomTableBio() {
             },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#e0f7fa", // Light blue background when hovered
-              cursor: "pointer", // Optional: Change cursor to pointer on hover
             },
           }}
           pageSizeOptions={[10, 20]}
@@ -239,7 +266,7 @@ export default function CustomTableBio() {
         />
       </div>
     </div>
-  )
+  );
 }
 
 function CustomModalDisplay({
@@ -249,8 +276,8 @@ function CustomModalDisplay({
   data,
   modalTitle,
 }) {
-  const matches = useMediaQuery("(min-width: 565px)")
-  console.log(data)
+  const matches = useMediaQuery("(min-width: 565px)");
+  console.log(data);
   return (
     <CustomCenterModal
       key={"open1"}
@@ -271,5 +298,5 @@ function CustomModalDisplay({
         </Box>
       </Box>
     </CustomCenterModal>
-  )
+  );
 }

@@ -50,7 +50,9 @@ export default function CustomAccordion({ data }) {
                 borderRadius: "5px",
               }}
             >
-              {item.description}
+              <Typography component="h1" color="#FFF">
+                {item.description}
+              </Typography>
             </Typography>
           </AccordionDetails>
         </Accordion>

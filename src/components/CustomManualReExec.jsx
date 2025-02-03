@@ -13,6 +13,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { format } from "date-fns";
+import { generateDateRange } from "../utils/datetimeformat";
 
 function CustomManualReExec() {
   const { handleCloseModal, open, modalTitle, modalOpener, getExecData } =
@@ -62,17 +63,18 @@ function CustomModalManualReExec({
   const handleSubmit = () => {
     const formattedPayload = [
       {
-        ...payload,
         device_id: payload.device_id.device_id,
-        datestart: payload.datestart
-          ? format(payload.datestart, "yyyy-MM-dd")
-          : "",
-        dateend: payload.dateend ? format(payload.dateend, "yyyy-MM-dd") : "",
+        dates: generateDateRange(
+          payload.datestart ? format(payload.datestart, "yyyy-MM-dd") : "",
+          payload.dateend ? format(payload.dateend, "yyyy-MM-dd") : ""
+        ),
       },
     ];
-    console.log(formattedPayload);
+
+    // console.log(formattedPayload);
     handleReExec(formattedPayload);
   };
+
   return (
     <CustomCenterModal
       key={"open1"}

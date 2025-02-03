@@ -16,12 +16,11 @@ export default function CustomAccordionNoFetch({ data }) {
     const payload = [
       {
         device_id,
-        datestart: dates[0],
-        dateend: dates[dates.length - 1],
+        dates,
       },
     ];
-    console.log(payload);
-    // handleReExec(payload);
+    // console.log(payload);
+    handleReExec(payload);
     // console.log(`Reload clicked for device: ${deviceId}`);
   };
   return (

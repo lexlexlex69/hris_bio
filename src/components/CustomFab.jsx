@@ -36,9 +36,10 @@ export default function CustomFab() {
           onClick={() => {
             modalOpener("Failed Fetch");
           }}
+          size="small"
         >
           <Badge badgeContent={notificationTotalCount} color="error">
-            <NotificationImportantIcon sx={{ margin: "10px" }} />
+            <NotificationImportantIcon sx={{ margin: "5px" }} />
           </Badge>
         </Fab>
       </Box>
@@ -55,15 +56,14 @@ function CustomModalNoFetch({
 }) {
   const matches = useMediaQuery("(min-width: 565px)");
   const { handleReExec } = useBio();
-  console.log(data);
+  console.log("customfab", data);
 
   const handleReExecAll = () => {
     const payload = data?.map((item) => ({
       device_id: item.device_id,
-      datestart: item.noFetchedDates[0],
-      dateend: item.noFetchedDates[item.noFetchedDates.length - 1],
+      dates: item.noFetchedDates,
     }));
-    console.log(payload);
+    // console.log(payload);
     handleReExec(payload);
   };
   return (

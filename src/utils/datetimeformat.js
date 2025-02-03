@@ -38,3 +38,16 @@ export const monthList = [
 export const currentYear = new Date().getFullYear();
 
 export const yearlist = [currentYear, currentYear - 1, currentYear - 2];
+
+export const generateDateRange = (start, end) => {
+  let startDate = new Date(start);
+  const endDate = new Date(end);
+  const range = [];
+
+  while (startDate <= endDate) {
+    range.push(startDate.toISOString().split("T")[0]); // Format YYYY-MM-DD
+    startDate.setDate(startDate.getDate() + 1); // Move to the next day
+  }
+
+  return range;
+};
