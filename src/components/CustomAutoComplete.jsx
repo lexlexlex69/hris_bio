@@ -4,11 +4,18 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Stack from "@mui/material/Stack";
 import { useBio } from "../context/BioManageProvider";
 import { monthList, yearlist } from "../utils/datetimeformat";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function CustomAutoComplete() {
-  const { getExecData, selectDevice, setSelectDevice, date, setDate } =
-    useBio();
-
+  const {
+    getExecData,
+    selectDevice,
+    setSelectDevice,
+    date,
+    setDate,
+    autoCompleteDeviceLoading,
+  } = useBio();
+  // console.log("autoCompleteDeviceLoading", autoCompleteDeviceLoading);
   const defaultPropsYear = {
     options: yearlist,
     getOptionLabel: (option) => option.toString(),
@@ -17,6 +24,7 @@ export default function CustomAutoComplete() {
     options: monthList,
     getOptionLabel: (option) => option.label,
   };
+
   const defaultProps = {
     options: getExecData,
     getOptionLabel: (option) => option.device_name,
@@ -58,6 +66,8 @@ export default function CustomAutoComplete() {
         {...defaultProps}
         id="controlled-demo"
         value={selectDevice ? selectDevice : null}
+        disabled={autoCompleteDeviceLoading}
+        autoCompleteDeviceLoading={autoCompleteDeviceLoading}
         onChange={(event, newValue) => {
           setSelectDevice(newValue);
         }}
@@ -67,6 +77,19 @@ export default function CustomAutoComplete() {
             label="Devices"
             variant="outlined"
             size="small"
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                endAdornment: (
+                  <React.Fragment>
+                    {autoCompleteDeviceLoading ? (
+                      <CircularProgress color="inherit" size={20} />
+                    ) : null}
+                    {params.InputProps.endAdornment}
+                  </React.Fragment>
+                ),
+              },
+            }}
           />
         )}
       />

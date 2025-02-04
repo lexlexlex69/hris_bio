@@ -3,6 +3,7 @@ import { filterData, groupByDevice } from "../process";
 import { fakeResponse2 } from "../fakeData";
 import { currentMonth, currentYear, monthList } from "../utils/datetimeformat";
 import { getExecLogs, reExec } from "../utils/requests";
+import CustomDialogReExec from "../components/CustomDialogReExec";
 
 const BioStateContext = createContext();
 
@@ -18,6 +19,10 @@ export const BioContextProvider = ({ children }) => {
   const [modalData, setModalData] = useState();
   const [open, setOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
+  const [reExecDialog, setReExecDialog] = useState(false);
+  const [autoCompleteDeviceLoading, setAutoCompleteDeviceLoading] =
+    useState(false);
+  const [reExecPayload, setReExecPayload] = useState();
 
   if (!date?.month && !date?.month) {
     const currentMonthConvert = monthList.find(
@@ -28,7 +33,7 @@ export const BioContextProvider = ({ children }) => {
       year: currentYear,
     });
   }
-
+  getExecData && console.log("getExecData", getExecData);
   const handleTableRowClick = (date) => {
     setOpen(true);
   };
@@ -63,9 +68,9 @@ export const BioContextProvider = ({ children }) => {
       data: item.data.filter((item) => item.Success === 0),
     }));
 
-  const handleReExec = async (payload) => {
+  const handleReExec = async () => {
     // console.log("payload", payload);
-    reExec(payload)
+    reExec(reExecPayload)
       .then((response) => {
         console.log("responseapi", response);
       })
@@ -74,6 +79,7 @@ export const BioContextProvider = ({ children }) => {
 
   useEffect(() => {
     setSelectDevice(null);
+    setAutoCompleteDeviceLoading(true);
     // setGetExecData(groupByDevice(fakeResponse2))
     date?.month &&
       date?.month &&
@@ -86,9 +92,20 @@ export const BioContextProvider = ({ children }) => {
           console.log("responseapiconverted", groupByDevice(response.data));
           setGetExecData(groupByDevice(response.data));
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() => {
+          setAutoCompleteDeviceLoading(false);
+        });
   }, [date]);
 
+  const handleClickOpenModalReExec = (payload) => {
+    setReExecDialog(true);
+    setReExecPayload(payload);
+  };
+  const handleClosereExecDialog = () => {
+    setReExecDialog(false);
+    setReExecPayload();
+  };
   return (
     <BioStateContext.Provider
       value={{
@@ -107,8 +124,16 @@ export const BioContextProvider = ({ children }) => {
         notificationData,
         handleDisplay,
         handleReExec,
+        autoCompleteDeviceLoading,
+        reExecDialog,
+        setReExecDialog,
+        handleClickOpenModalReExec,
+        handleClosereExecDialog,
+        reExecPayload,
       }}
     >
+      <CustomDialogReExec />
+
       {children}
     </BioStateContext.Provider>
   );

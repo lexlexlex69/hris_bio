@@ -17,6 +17,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import CustomDialogReExec from "./CustomDialogReExec";
 
 export default function CustomTableBio() {
   const {
@@ -27,6 +28,7 @@ export default function CustomTableBio() {
     open,
     modalOpener,
     handleReExec,
+    handleClickOpenModalReExec,
   } = useBio();
 
   const columns = [
@@ -147,23 +149,22 @@ export default function CustomTableBio() {
       headerAlign: "center",
 
       renderCell: (params) => {
+        const currentRow = params.row;
+        const payload = [
+          {
+            device_id: currentRow.logs[0].device_id,
+            dates: [currentRow.datestart],
+          },
+        ];
         const onClick = (e) => {
           const currentRow = params.row;
           currentRow && modalOpener("Execution Log", currentRow.datestart);
           // return alert(JSON.stringify(currentRow, null, 4))
         };
 
-        const reexec = (e) => {
-          const currentRow = params.row;
-          const payload = [
-            {
-              device_id: currentRow.logs[0].device_id,
-              dates: [currentRow.datestart],
-            },
-          ];
-          // currentRow && console.log(payload);
-          handleReExec(payload);
-        };
+        // currentRow && console.log(payload);
+        // handleReExec(payload);
+
         const [anchorEl, setAnchorEl] = React.useState(null);
         const open = Boolean(anchorEl);
         const handleClick = (event) => {
@@ -202,7 +203,14 @@ export default function CustomTableBio() {
               }}
             >
               <MenuItem onClick={onClick}>Open</MenuItem>
-              <MenuItem onClick={reexec}>Re-Exec</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  handleClose();
+                  handleClickOpenModalReExec(payload);
+                }}
+              >
+                Re-Exec
+              </MenuItem>
             </Menu>
             {/* <Button
               variant="outlined"

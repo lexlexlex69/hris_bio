@@ -9,7 +9,7 @@ import { formatDate } from "./utils/datetimeformat";
 import { useBio } from "./context/BioManageProvider";
 
 export default function CustomAccordionNoFetch({ data }) {
-  const { handleReExec } = useBio();
+  const { handleReExec, handleClickOpenModalReExec } = useBio();
   console.log(data);
   const handleButtonClick = (event, device_id, dates) => {
     event.stopPropagation(); // Prevents accordion expansion
@@ -20,7 +20,8 @@ export default function CustomAccordionNoFetch({ data }) {
       },
     ];
     // console.log(payload);
-    handleReExec(payload);
+    handleClickOpenModalReExec(payload);
+    // handleReExec(payload);
     // console.log(`Reload clicked for device: ${deviceId}`);
   };
   return (

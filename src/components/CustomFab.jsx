@@ -55,7 +55,7 @@ function CustomModalNoFetch({
   data,
 }) {
   const matches = useMediaQuery("(min-width: 565px)");
-  const { handleReExec } = useBio();
+  const { handleClickOpenModalReExec } = useBio();
   console.log("customfab", data);
 
   const handleReExecAll = () => {
@@ -64,7 +64,8 @@ function CustomModalNoFetch({
       dates: item.noFetchedDates,
     }));
     // console.log(payload);
-    handleReExec(payload);
+    // handleReExec(payload);
+    handleClickOpenModalReExec(payload);
   };
   return (
     <CustomCenterModal
