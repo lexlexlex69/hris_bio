@@ -46,7 +46,7 @@ function CustomModalManualReExec({
   getExecData,
 }) {
   const matches = useMediaQuery("(min-width: 565px)");
-  const { handleReExec } = useBio();
+  const { handleClickOpenModalReExec } = useBio();
   // console.log(data)
 
   const [payload, setPayload] = useState({
@@ -72,7 +72,7 @@ function CustomModalManualReExec({
     ];
 
     // console.log(formattedPayload);
-    handleReExec(formattedPayload);
+    handleClickOpenModalReExec(formattedPayload);
   };
 
   return (

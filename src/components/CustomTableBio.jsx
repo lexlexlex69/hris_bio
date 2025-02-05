@@ -17,7 +17,8 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import CustomDialogReExec from "./CustomDialogReExec";
+import ReplayIcon from "@mui/icons-material/Replay";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
 export default function CustomTableBio() {
   const {
@@ -29,6 +30,7 @@ export default function CustomTableBio() {
     modalOpener,
     handleReExec,
     handleClickOpenModalReExec,
+    showRows,
   } = useBio();
 
   const columns = [
@@ -202,13 +204,16 @@ export default function CustomTableBio() {
                 "aria-labelledby": "basic-button",
               }}
             >
-              <MenuItem onClick={onClick}>Open</MenuItem>
+              <MenuItem onClick={onClick}>
+                <OpenInNewIcon sx={{ marginRight: "5px" }} /> Open
+              </MenuItem>
               <MenuItem
                 onClick={() => {
                   handleClose();
                   handleClickOpenModalReExec(payload);
                 }}
               >
+                <ReplayIcon sx={{ marginRight: "5px" }} />
                 Re-Exec
               </MenuItem>
             </Menu>
@@ -267,6 +272,11 @@ export default function CustomTableBio() {
             },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#e0f7fa", // Light blue background when hovered
+            },
+            ".MuiDataGrid-row": {
+              opacity: showRows ? 0 : 1,
+              // maxHeight: showRows ? "100px" : "0px",
+              transition: "opacity 0.5s ease, max-height 0.5s ease",
             },
           }}
           pageSizeOptions={[10, 20]}

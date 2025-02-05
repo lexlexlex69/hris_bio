@@ -2,15 +2,24 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
-import { Badge, Button, useMediaQuery } from "@mui/material";
+import { Badge, Button, Typography, useMediaQuery } from "@mui/material";
 import { useBio } from "../context/BioManageProvider";
 import { CustomCenterModal } from "../CustomCenterModal";
 import CustomAccordion from "../CustomAccordion";
 import CustomAccordionNoFetch from "../CustomAccordionNoFetch";
+import ReplayIcon from "@mui/icons-material/Replay";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function CustomFab() {
-  const { notificationData, handleCloseModal, open, modalTitle, modalOpener } =
-    useBio();
+  const {
+    notificationData,
+    handleCloseModal,
+    open,
+    modalTitle,
+    modalOpener,
+    autoCompleteDeviceLoading,
+    getExecDataError,
+  } = useBio();
   console.log("notificationData", notificationData);
 
   // const notificationTotalCount = notificationData?.reduce(
@@ -36,10 +45,19 @@ export default function CustomFab() {
           onClick={() => {
             modalOpener("Failed Fetch");
           }}
+          disabled={getExecDataError || autoCompleteDeviceLoading}
           size="small"
         >
           <Badge badgeContent={notificationTotalCount} color="error">
-            <NotificationImportantIcon sx={{ margin: "5px" }} />
+            {getExecDataError || autoCompleteDeviceLoading ? (
+              <>
+                <CircularProgress color="inherit" size={20} />
+              </>
+            ) : (
+              <>
+                <NotificationImportantIcon sx={{ margin: "5px" }} />
+              </>
+            )}
           </Badge>
         </Fab>
       </Box>
@@ -77,9 +95,26 @@ function CustomModalNoFetch({
       handleCloseBTN={handleCloseBTN}
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        <Button variant="contained" onClick={handleReExecAll}>
-          Re-Execute All
-        </Button>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box
+            sx={{
+              textAlign: "center",
+              boxShadow: 3,
+              padding: "10px 20px",
+              bgcolor: "#ff4747",
+              borderRadius: "10px",
+            }}
+          >
+            <Typography variant="h3" color="white">
+              {data?.length}
+            </Typography>
+            <Typography color="white"> Failed Devices</Typography>
+          </Box>
+          <Button variant="contained" onClick={handleReExecAll}>
+            <ReplayIcon sx={{ marginRight: "5px" }} />
+            Re-Execute All
+          </Button>
+        </Box>
 
         <Box sx={{ overflow: "auto", height: "60vh", padding: "5px 0px" }}>
           <CustomAccordionNoFetch data={data ? data : []} />

@@ -9,6 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 export default function CustomAutoComplete() {
   const {
     getExecData,
+    getExecDataError,
     selectDevice,
     setSelectDevice,
     date,
@@ -66,7 +67,7 @@ export default function CustomAutoComplete() {
         {...defaultProps}
         id="controlled-demo"
         value={selectDevice ? selectDevice : null}
-        disabled={autoCompleteDeviceLoading}
+        disabled={autoCompleteDeviceLoading || getExecDataError}
         autoCompleteDeviceLoading={autoCompleteDeviceLoading}
         onChange={(event, newValue) => {
           setSelectDevice(newValue);

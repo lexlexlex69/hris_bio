@@ -60,7 +60,15 @@ export default function CustomAccordionNoFetch({ data }) {
           <AccordionDetails>
             {item.data.map((item, index) => (
               <>
-                <Box sx={{ display: "flex" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    bgcolor: "error.main",
+                    color: "white",
+                    borderRadius: "10px",
+                    padding: "5px 10px",
+                  }}
+                >
                   <Typography
                     sx={{
                       padding: "10px 5px",

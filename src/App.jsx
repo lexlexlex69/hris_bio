@@ -21,7 +21,7 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Accept"] = "application/json";
 
 axios.interceptors.request.use((config) => {
-  const token = "178533|LjxYa8rYEMHD2DT1xfAMN1qGNS3zykXx6T4V9HX7";
+  const token = "178472|TrUUpoFxkAYOT23afVhBo6NwV7yBk9qahtu7yKdo";
   config.headers.Authorization = token ? `Bearer ${token}` : "";
   return config;
 });
@@ -47,7 +47,7 @@ function App() {
             }}
           >
             <CustomAutoComplete />
-            <Button variant="contained" onClick={handleDisplay} size="small" se>
+            <Button variant="contained" onClick={handleDisplay} size="small">
               Display
             </Button>
           </Box>

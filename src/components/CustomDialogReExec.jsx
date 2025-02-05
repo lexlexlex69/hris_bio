@@ -7,7 +7,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { useBio } from "../context/BioManageProvider";
-import { Typography } from "@mui/material";
+import { Box, Chip, Typography } from "@mui/material";
 import CustomAccordionReExec from "../CustomAccordionReExec";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -28,24 +28,33 @@ export default function CustomDialogReExec() {
         aria-describedby="alert-dialog-slide-description"
         fullWidth={"lg"}
         scroll={"paper"}
+        sx={{ zIndex: 9999 }}
       >
-        <DialogTitle>{"Re-Execute"}</DialogTitle>
+        <DialogTitle>
+          <Typography
+            variant="h4"
+            sx={{ padding: "10px 10px", borderRadius: "5px", color: "white" }}
+            bgcolor={"#1976d2"}
+          >
+            Re-Execute
+          </Typography>
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             {/* {JSON.stringify(reExecPayload)} */}
-            <Typography>
-              Devices:
-              {reExecPayload?.map((item) => (
-                <>
-                  <CustomAccordionReExec data={[item]} />
-                </>
-              ))}
-            </Typography>
+            <Typography variant="h5">Devices:</Typography>
+            {reExecPayload?.map((item) => (
+              <>
+                <CustomAccordionReExec data={[item]} />
+              </>
+            ))}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleReExec}>Proceed</Button>
           <Button onClick={handleClosereExecDialog}>Cancel</Button>
+          <Button variant="contained" onClick={handleReExec}>
+            Proceed
+          </Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

@@ -38,8 +38,7 @@ export default function CustomAccordion({ data }) {
             id={item.datestart}
           >
             <Typography>
-              {formatDateTime(item.datetime_loaded)}
-              {item.id}
+              #{item.id} {formatDateTime(item.datetime_loaded)}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>

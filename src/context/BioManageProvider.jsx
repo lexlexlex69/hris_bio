@@ -4,6 +4,7 @@ import { fakeResponse2 } from "../fakeData";
 import { currentMonth, currentYear, monthList } from "../utils/datetimeformat";
 import { getExecLogs, reExec } from "../utils/requests";
 import CustomDialogReExec from "../components/CustomDialogReExec";
+import CustomSnackbar from "../components/CustomSnackBar";
 
 const BioStateContext = createContext();
 
@@ -14,6 +15,7 @@ export const BioContextProvider = ({ children }) => {
   });
   console.log(date);
   const [getExecData, setGetExecData] = useState();
+  const [getExecDataError, setGetExecDataError] = useState();
   const [selectDevice, setSelectDevice] = useState(null);
   const [displayData, setDisplayData] = useState();
   const [modalData, setModalData] = useState();
@@ -23,6 +25,32 @@ export const BioContextProvider = ({ children }) => {
   const [autoCompleteDeviceLoading, setAutoCompleteDeviceLoading] =
     useState(false);
   const [reExecPayload, setReExecPayload] = useState();
+  const [showRows, setShowRows] = useState(false);
+  const [openSnack, setOpenSnack] = useState(false);
+  const [snackDetails, setSnackDetails] = useState({
+    desc: "",
+    type: "",
+  });
+
+  const handleClick = (desc, type) => {
+    setSnackDetails({
+      desc,
+      type,
+    });
+    setOpenSnack(true);
+  };
+
+  const handleCloseSnack = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnack(false);
+  };
+
+  console.log("getExecData", getExecData);
+  useEffect(() => {
+    handleClick;
+  }, [getExecDataError]);
 
   if (!date?.month && !date?.month) {
     const currentMonthConvert = monthList.find(
@@ -55,6 +83,10 @@ export const BioContextProvider = ({ children }) => {
   };
 
   const handleDisplay = () => {
+    setShowRows(true);
+    setTimeout(() => {
+      setShowRows(false);
+    }, 300);
     const toDisplay = getExecData?.find(
       (item, index) => item.device_id == selectDevice?.device_id
     );
@@ -65,14 +97,18 @@ export const BioContextProvider = ({ children }) => {
     ?.filter((item) => item.noFetchedDates.length != 0)
     .map((item) => ({
       ...item,
-      data: item.data.filter((item) => item.Success === 0),
+      data: item.data.filter(
+        (item) => item.Success === 0 && item.Warning == 0 && item.Failed != 0
+      ),
     }));
 
   const handleReExec = async () => {
     // console.log("payload", payload);
+    handleClosereExecDialog();
     reExec(reExecPayload)
       .then((response) => {
         console.log("responseapi", response);
+        handleClick("Process added to queue successfully. ", "success");
       })
       .catch((err) => console.log(err));
   };
@@ -80,7 +116,8 @@ export const BioContextProvider = ({ children }) => {
   useEffect(() => {
     setSelectDevice(null);
     setAutoCompleteDeviceLoading(true);
-    // setGetExecData(groupByDevice(fakeResponse2))
+    // setGetExecData(groupByDevice(fakeResponse2));
+    // setAutoCompleteDeviceLoading(false);
     date?.month &&
       date?.month &&
       getExecLogs({
@@ -89,8 +126,20 @@ export const BioContextProvider = ({ children }) => {
       })
         .then((response) => {
           console.log("responseapi", response);
-          console.log("responseapiconverted", groupByDevice(response.data));
-          setGetExecData(groupByDevice(response.data));
+          // console.log("responseapiconverted", groupByDevice(response.data));
+          if (!response.data) {
+            if (response.data == "Unauthorized Access") {
+              setGetExecDataError(response.data);
+            } else {
+              setGetExecDataError("Error while fetching data");
+            }
+            handleClick(
+              "Error while fetching data please reload the page.",
+              "error"
+            );
+          } else {
+            setGetExecData(groupByDevice(response.data));
+          }
         })
         .catch((err) => console.log(err))
         .finally(() => {
@@ -112,6 +161,7 @@ export const BioContextProvider = ({ children }) => {
         date,
         setDate,
         getExecData,
+        getExecDataError,
         selectDevice,
         setSelectDevice,
         displayData,
@@ -130,10 +180,14 @@ export const BioContextProvider = ({ children }) => {
         handleClickOpenModalReExec,
         handleClosereExecDialog,
         reExecPayload,
+        showRows,
+        openSnack,
+        handleCloseSnack,
+        snackDetails,
       }}
     >
       <CustomDialogReExec />
-
+      <CustomSnackbar />
       {children}
     </BioStateContext.Provider>
   );
